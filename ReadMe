@@ -1,0 +1,76 @@
+Classification of News Articles
+
+This project is working with a collection of articles on topics, including `baseball`, `cryptography`, `electronics`, `hardware`, `medicine`, `mideast`, `motorcycles`,`politics`, `religion`, and `space`. 
+
+The posts are extracted from the 20 Newsgroups dataset. The tasks in this project includes preprocessing this data, and predicting the topics from this collection of texts using a supervised machine learning algorithm.
+
+Get the data
+A `run.py` file is used to manage the project. To download the data in the right place; in a terminal run from within the repository:
+python run.py setup
+
+This will download three files:
+
+● X_train.zip: the training set as a csv file -- it contains one unique column `text` with the
+content of an article. Note that the file is zipped but NO NEED TO UNZIP it, you can
+simply call pd.read_csv("data/X_train.zip") to open it, saving space on disk.
+
+● y_train.zip: the target for our training set, corresponds to all the classes we are trying to
+predict.
+
+● X_test.zip: A sample test dataframe to test your model locally.
+
+Get Started
+You will need to implement a function build_model in model.py and use the run.py to train the model and save its state to a file.
+
+Call
+python run.py train
+To train your model and save a pickle file
+
+For this project, sklearn guidelines are followed and the aim was to implement a model that was compatible with the rest of the Python Machine Learning ecosystem -- so the model could be used by any tool such as Grid Search, Cross Validation etc… out of the box.
+
+The build_model function is in charge of building and instantiating the model.The output model needs to be a sklearn Pipeline object with two stages:
+
+- preprocessor: that’s a sklearn Transformer object.
+
+- model: that’s a sklearn predictive model (also called an Estimator)
+
+
+For example, preprocessor can be:
+
+● An existing transformer such as TfidfVectorizer
+
+● A higher level transformer that combines other transformers such as ColumnTransformer, Pipeline, etc…
+
+● A fully custom transformer where a bespoke fit and transform methods are implemented
+
+https://towardsdatascience.com/custom-transformers-and-ml-data-pipelines-with-python20ea2a7adb65)
+
+Same goes for your predictive model, it can be:
+
+● An existing model such as MultinomialNB
+
+● A higher level estimator, for instance built with a Pipeline
+
+● A fully custom predictive model where a bespoke fit and predict methods are implemented
+
+(see tutorial here http://danielhnyk.cz/creating-your-own-estimator-scikit-learn/)
+
+You can run
+python run.py test
+To make sure your model generates predictions properly.
+
+Baseline model
+Here as a baseline we run tf-idf as a preprocessing step followed by a Multinomial Naive Bayes model. Note that the TfidfVectorizer is wrapped into a ColumnTransformer object in order to specify that it needs to be trained on the `text` column specifically.
+
+from sklearn.compose import ColumnTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import Pipeline
+
+def build_model():
+        preprocessor = ColumnTransformer([("processing", TfidfVectorizer(),
+"text")])
+
+                return Pipeline([("preprocessor", preprocessor), ("model",
+MultinomialNB())])
+
